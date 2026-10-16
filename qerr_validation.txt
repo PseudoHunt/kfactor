@@ -1,0 +1,4 @@
+(a) HF score vs Re sum rho conj(z) e^(+i theta Delta): max diff 6.0e-14
+(b) err_q closed form vs explicit Delta sums: free m=2 max diff 1.6e-14; freqfold_8 max diff 2.7e-14
+(c) aligned-query err for free m=2, layer 15: 0.046954 vs stored energy err 0.046954
+(d) greedy m=1 == brute-force best atom: True

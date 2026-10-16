@@ -73,6 +73,33 @@ the q-aligned part; this does not by itself license replacing per-pair RoPE for 
 Errors roughly double going from 4k to 32k for the pencil; the NoPE-low-frequency shortcut that was nearly free for
 Qwen at short range breaks down at 32k (its low-frequency pairs do rotate over that window).
 
+**Step 6 — query-weighted kernel error** (`qcal.py`, `qerr.py`, `qerr_report.py`). Per-head query second moments
+`M_h = E[ρρ^H]` (pre-RoPE `q_proj` output, 64 complex pairs) weight the kernel error:
+`err_q = Σ Q∘R / Σ Q∘E`, `Q = M_h ∘ (conj(z) z^T)` (verified against HF `apply_rotary_pos_emb`). With real queries the
+error is 2.5–3x the aligned-query error (free m=2 poles: 0.124 vs 0.046 on Llama-2). Hard heads (err_q > 0.1) carry
+~2x more query energy in pairs 0–15 (Spearman 0.80 / 0.88).
+
+**Step 7 — training-free perplexity with the fold implemented** (`fold_select.py`, `fold_eval.py`, `fold_report.py`).
+WikiText-2 test, layers 0–1 uncompressed, keys of layers 2–31 replaced by the rank-600 latent `c_t = k_t V_r`.
+Unit test: all 64 RoPE atoms with P = I reproduces real RoPE to 5e-14 (fp64) and PPL to 2.5e-5 (fp32).
+
+| config | Llama-2 @2048 | Qwen @2048 | Qwen @8192 |
+|---|---|---|---|
+| H full model | 5.817 | 7.552 | 7.306 |
+| A truncation only (k̂ → real RoPE) | 5.987 (+2.9%) | 8.249 (+9.2%) | 8.095 (+10.8%) |
+| F freqfold_8 | 8.506 | 29.19 | 64.18 |
+| G nope_lowfreq_32 | 21.07 | 8.303 | 8.866 |
+| B RoPE atoms, uniform q-objective, m=2 | 121.4 | 233.1 | 229.2 |
+| C same, m=4 | 95.7 | 217.0 | 174.9 |
+| D 8 poles + 64 RoPE atoms, m=4 | 107.4 | 206.7 | 202.3 |
+| E as C, hard heads m=16 | 93.5 | 181.9 | (running) |
+
+The fitted configs B–E fail because the selection objective was uniform over Δ: total score error is 1.6–2.8%, but it
+concentrates at small Δ (230–420% relative at Δ=0, 76–142% at Δ=1–3) where attention mass sits; the substitution
+baselines F/G are exact at Δ=0 by construction. err_q (uniform over Δ) does not predict PPL. Phase 2 (in progress):
+attention-mass-profile weighting, an exactness constraint Σ_k P_ki = 1 at Δ=0 (`fold_select2.py`), and an exact
+recent window W ∈ {16, 64} + 4 sink tokens (`attn_profile.py`, `fold_report2.py`).
+
 ## Important caveats
 
 - `kernel_fit.py` used 20 LM iterations, which were **not converged** (80 and 200 iterations agree to 1e-4 and are

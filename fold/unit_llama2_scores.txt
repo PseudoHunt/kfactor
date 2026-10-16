@@ -1,0 +1,17 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|                                                                                                                      | 0/291 [00:00<?, ?it/s]Loading weights: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████| 291/291 [00:00<00:00, 3543.93it/s]
+UNIT scores layer 2: max|score| 2.679e+02; max|part - realRoPE| 1.831e-04; max|U64 - realRoPE| 4.776e-03 (rel 1.8e-05)
+UNIT scores layer 15: max|score| 3.192e+02; max|part - realRoPE| 1.984e-04; max|U64 - realRoPE| 7.141e-03 (rel 2.2e-05)
+UNIT scores layer 31: max|score| 7.663e+02; max|part - realRoPE| 2.136e-04; max|U64 - realRoPE| 1.001e-02 (rel 1.3e-05)
+Traceback (most recent call last):
+  File "/home/kfactor/fold_eval.py", line 206, in <module>
+    pU, nU, tU = ppl("U64", wins)
+  File "/home/kfactor/fold_eval.py", line 156, in ppl
+    install(cfgname)
+  File "/home/kfactor/fold_eval.py", line 141, in install
+    a._fold = build(cfgname, l)
+  File "/home/kfactor/fold_eval.py", line 127, in build
+    return unit_spec(l)
+  File "/home/kfactor/fold_eval.py", line 116, in unit_spec
+    heads.append({"g": torch.from_numpy(g).to(dev), "k": torch.from_numpy(kk).to(dev), "U": torch.from_numpy(U).to(dev)})
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 23.60 GiB of which 12.44 MiB is free. Including non-PyTorch memory, this process has 23.58 GiB memory in use. Of the allocated memory 22.75 GiB is allocated by PyTorch, and 561.12 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)

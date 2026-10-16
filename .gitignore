@@ -7,3 +7,5 @@ __pycache__/
 *.log
 dl_*.log
 .ipynb_checkpoints/
+*.npy
+qerr_rc1e-14/
