@@ -1,0 +1,22 @@
+[1] llama2-7b L15 pencil_1@4096: gram 0.064511 vs stored explicit 0.064511  rel diff 8.4e-15
+[1] llama2-7b L15 pencil_2@4096: gram 0.046954 vs stored explicit 0.046954  rel diff 1.0e-14
+[2] llama2-7b L15 freqfold_8: closed-form 3.153111e-01 vs stored 3.153111e-01  max|item| 4.5e+00
+[2] llama2-7b L15 nope_lowfreq_32: closed-form 1.627700e+00 vs stored 1.627700e+00  max|item| 7.6e+00
+[2] llama2-7b L15 freqfold_1: closed-form 0.000000e+00 vs stored 0.000000e+00  max|item| 0.0e+00
+[2] llama2-7b L15 nope_lowfreq_64: closed-form 0.000000e+00 vs stored 0.000000e+00  max|item| 0.0e+00
+[3] llama2-7b L15 OMP: max |closed-form - explicit| err 1.2e-14; worst-pair residual 3.0e-15; |err(sum w_i P e_i) - err(LS on K)| 5.6e-17
+[4] llama2-7b L=32768 err_free closed form vs explicit: max diff 3.3e-16
+[1] qwen1.5-7b L14 pencil_1@4096: gram 0.016816 vs stored explicit 0.016816  rel diff 3.5e-14
+[1] qwen1.5-7b L14 pencil_2@4096: gram 0.013957 vs stored explicit 0.013957  rel diff 2.6e-14
+[2] qwen1.5-7b L14 freqfold_8: closed-form 8.802304e-02 vs stored 8.802304e-02  max|item| 1.8e+00
+[2] qwen1.5-7b L14 nope_lowfreq_32: closed-form 4.679686e-02 vs stored 4.679686e-02  max|item| 8.7e-01
+[2] qwen1.5-7b L14 freqfold_1: closed-form 0.000000e+00 vs stored 0.000000e+00  max|item| 0.0e+00
+[2] qwen1.5-7b L14 nope_lowfreq_64: closed-form 0.000000e+00 vs stored 0.000000e+00  max|item| 0.0e+00
+[3] qwen1.5-7b L14 OMP: max |closed-form - explicit| err 9.8e-15; worst-pair residual 5.0e-15; |err(sum w_i P e_i) - err(LS on K)| 2.8e-17
+[4] qwen1.5-7b L=32768 err_free closed form vs explicit: max diff 5.0e-16
+[5] stride 8 pair 0    : true [1.] raw [0.214602] -> [1.] |dth| 0.0e+00 |lam| 0.0e+00 PASS
+[5] stride 8 pair 1    : true [0.805842] raw [0.020444] -> [0.80584219] |dth| 0.0e+00 |lam| 0.0e+00 PASS
+[5] stride 8 pair 3    : true [0.523299] raw [-0.262099] -> [0.52329912] |dth| 0.0e+00 |lam| 0.0e+00 PASS
+[5] stride 8 pair 6    : true [0.273842] raw [0.273842] -> [0.27384196] |dth| 0.0e+00 |lam| 0.0e+00 PASS
+[5] stride 8 pairs 0+40: true [1.00e+00 1.78e-04] raw [2.14602e-01 1.78000e-04] -> [1.00000e+00 1.77828e-04] |dth| 3.4e-17 |lam| 0.0e+00 PASS
+[5] stride 8 pairs 1+3 : true [0.805842 0.523299] raw [ 0.020444 -0.262099] -> [0.80584219 0.52329912] |dth| 0.0e+00 |lam| 0.0e+00 PASS

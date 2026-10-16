@@ -1,0 +1,27 @@
+{
+ "model": "Qwen/Qwen1.5-0.5B",
+ "n_kv": 16,
+ "n_h": 16,
+ "d_h": 64,
+ "out": 1024,
+ "ranks": [
+  75,
+  150,
+  278,
+  406
+ ],
+ "group_sizes": [
+  1,
+  2,
+  4,
+  8,
+  32
+ ],
+ "tokens": 131072,
+ "pairing_check": {
+  "fp64/rotate_half": 8.881784197001252e-16,
+  "fp64/interleaved": 0.9899613944835597,
+  "native/rotate_half": 2.4084596716988926e-07,
+  "native/interleaved": 0.9899615932867007
+ }
+}

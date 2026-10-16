@@ -1,0 +1,17 @@
+llama2-7b  L=4096 s=4 pair 0                     m=1: true th=[1.] raw th=[-0.570796] -> th=[1.] lam=[2.77555756e-17] |dth|=0.0e+00 |lam|=2.8e-17 switches=1 err=1.1e-27 PASS
+llama2-7b  L=4096 s=4 pair 2                     m=1: true th=[0.749894] raw th=[0.749894] -> th=[0.74989421] lam=[0.] |dth|=0.0e+00 |lam|=0.0e+00 switches=0 err=2.0e-31 PASS
+llama2-7b  L=4096 s=4 pairs 0+40 (equal energy)  m=2: true th=[1.       0.003162] raw th=[ 0.003162 -0.570796] -> th=[1.         0.00316228] lam=[5.55111512e-17 0.00000000e+00] |dth|=1.1e-16 |lam|=5.6e-17 switches=1 err=1.7e-26 PASS
+llama2-7b  L=4096 s=4 pairs 0+40 (0.9/0.1)       m=2: true th=[1.       0.003162] raw th=[ 0.003162 -0.570796] -> th=[1.         0.00316228] lam=[1.38777878e-16 0.00000000e+00] |dth|=2.6e-18 |lam|=1.4e-16 switches=1 err=2.7e-26 PASS
+llama2-7b  L= 512 s=1 pair 0                     m=1: true th=[1.] raw th=[1.] -> th=[1.] lam=[0.] |dth|=0.0e+00 |lam|=0.0e+00 switches=0 err=2.0e-31 PASS
+llama2-7b  L= 512 s=1 pair 2                     m=1: true th=[0.749894] raw th=[0.749894] -> th=[0.74989421] lam=[0.] |dth|=4.4e-16 |lam|=0.0e+00 switches=0 err=4.7e-27 PASS
+llama2-7b  L= 512 s=1 pairs 0+40 (equal energy)  m=2: true th=[1.       0.003162] raw th=[1.       0.003162] -> th=[1.         0.00316228] lam=[0. 0.] |dth|=2.2e-16 |lam|=0.0e+00 switches=0 err=7.8e-28 PASS
+llama2-7b  L= 512 s=1 pairs 0+40 (0.9/0.1)       m=2: true th=[1.       0.003162] raw th=[1.       0.003162] -> th=[1.         0.00316228] lam=[2.22044605e-16 2.22044605e-16] |dth|=2.2e-16 |lam|=2.2e-16 switches=0 err=2.4e-27 PASS
+qwen1.5-7b L=4096 s=4 pair 0                     m=1: true th=[1.] raw th=[-0.570796] -> th=[1.] lam=[2.77555756e-17] |dth|=0.0e+00 |lam|=2.8e-17 switches=1 err=1.1e-27 PASS
+qwen1.5-7b L=4096 s=4 pair 2                     m=1: true th=[0.649382] raw th=[0.649382] -> th=[0.64938163] lam=[0.] |dth|=0.0e+00 |lam|=0.0e+00 switches=0 err=2.0e-31 PASS
+qwen1.5-7b L=4096 s=4 pairs 0+40 (equal energy)  m=2: true th=[1.00e+00 1.78e-04] raw th=[ 1.78000e-04 -5.70796e-01] -> th=[1.00000e+00 1.77828e-04] lam=[2.77555756e-17 0.00000000e+00] |dth|=5.4e-17 |lam|=2.8e-17 switches=1 err=2.6e-27 PASS
+qwen1.5-7b L=4096 s=4 pairs 0+40 (0.9/0.1)       m=2: true th=[1.00e+00 1.78e-04] raw th=[ 1.78000e-04 -5.70796e-01] -> th=[1.00000e+00 1.77828e-04] lam=[0. 0.] |dth|=1.1e-16 |lam|=0.0e+00 switches=1 err=2.6e-26 PASS
+qwen1.5-7b L= 512 s=1 pair 0                     m=1: true th=[1.] raw th=[1.] -> th=[1.] lam=[0.] |dth|=0.0e+00 |lam|=0.0e+00 switches=0 err=2.0e-31 PASS
+qwen1.5-7b L= 512 s=1 pair 2                     m=1: true th=[0.649382] raw th=[0.649382] -> th=[0.64938163] lam=[6.66133815e-16] |dth|=1.1e-16 |lam|=6.7e-16 switches=0 err=1.0e-26 PASS
+qwen1.5-7b L= 512 s=1 pairs 0+40 (equal energy)  m=2: true th=[1.00e+00 1.78e-04] raw th=[1.00e+00 1.78e-04] -> th=[1.00000e+00 1.77828e-04] lam=[0.00000000e+00 7.77156117e-16] |dth|=1.7e-18 |lam|=7.8e-16 switches=0 err=6.6e-27 PASS
+qwen1.5-7b L= 512 s=1 pairs 0+40 (0.9/0.1)       m=2: true th=[1.00e+00 1.78e-04] raw th=[1.00e+00 1.78e-04] -> th=[1.00000e+00 1.77828e-04] lam=[0.00000000e+00 3.33066907e-16] |dth|=3.3e-16 |lam|=3.3e-16 switches=0 err=5.9e-29 PASS
+ALL PASS

@@ -1,0 +1,7 @@
+model,layer,structured_ok,structured_ratio,min_m
+llama2-7b,1,True,0.9715246628927188,none
+llama2-7b,15,False,0.8867461302961696,2
+llama2-7b,24,False,0.8897213621754211,1
+qwen1.5-7b,1,False,0.9466384470512808,8
+qwen1.5-7b,14,False,0.8314765157015857,1
+qwen1.5-7b,28,False,0.8137217499466866,1

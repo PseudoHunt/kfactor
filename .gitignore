@@ -1,0 +1,9 @@
+# large or regenerable artifacts
+*/C/
+*.npz
+!*/alloc.npz
+!dict_fit/dict_centers.npz
+__pycache__/
+*.log
+dl_*.log
+.ipynb_checkpoints/

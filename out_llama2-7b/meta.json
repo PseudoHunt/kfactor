@@ -1,0 +1,27 @@
+{
+ "model": "NousResearch/Llama-2-7b-hf",
+ "n_kv": 32,
+ "n_h": 32,
+ "d_h": 128,
+ "out": 4096,
+ "ranks": [
+  300,
+  600,
+  1112,
+  1624
+ ],
+ "group_sizes": [
+  1,
+  2,
+  4,
+  8,
+  64
+ ],
+ "tokens": 131072,
+ "pairing_check": {
+  "fp64/rotate_half": 1.7763568394002505e-15,
+  "fp64/interleaved": 1.3418817854105978,
+  "native/rotate_half": 4.724095266084305e-07,
+  "native/interleaved": 1.3418816470263977
+ }
+}
