@@ -61,6 +61,18 @@ A dictionary of 8 poles per layer is already within 1.5x of free poles at m=2 fo
 significant pair (>1% energy) has projection residual ≈ 0.98–0.999 in every configuration. The kernel being fitted is
 the q-aligned part; this does not by itself license replacing per-pair RoPE for arbitrary queries.
 
+**Step 5 — Qwen1.5-7B free poles at L=32768** (stride-8 pencil with alias-branch choice):
+
+| method | channels | L=4096 mean / median | L=32768 mean / median | layers > 0.05 at 32768 |
+|---|---|---|---|---|
+| pencil m=1 | 2 | 0.045 / 0.027 | 0.090 / 0.066 | 28 |
+| pencil m=2 | 4 | 0.033 / 0.022 | 0.067 / 0.051 | 17 |
+| freqfold_2 | 64 | 0.102 / 0.056 | 0.200 / 0.135 | 32 |
+| nope_lowfreq_32 | 64 | 0.049 / 0.044 | 0.382 / 0.323 | 32 |
+
+Errors roughly double going from 4k to 32k for the pencil; the NoPE-low-frequency shortcut that was nearly free for
+Qwen at short range breaks down at 32k (its low-frequency pairs do rotate over that window).
+
 ## Important caveats
 
 - `kernel_fit.py` used 20 LM iterations, which were **not converged** (80 and 200 iterations agree to 1e-4 and are
