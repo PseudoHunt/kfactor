@@ -24,6 +24,8 @@ ids = tok("\n\n".join(ds["text"]), return_tensors="pt", add_special_tokens=False
 bos = tok.bos_token_id
 assert ids.numel() >= n * nseq
 mass = torch.zeros(NL, H, n, dtype=torch.float64, device=dev)
+mass_ns = torch.zeros(NL, H, n, dtype=torch.float64, device=dev)   # excluding sink keys t < 4
+SINK = 4
 s_idx = torch.arange(n, device=dev)
 dmat = (s_idx[:, None] - s_idx[None, :]).clamp(min=0)            # offset matrix (masked entries have zero weight)
 causal = torch.ones(n, n, dtype=torch.bool, device=dev).tril()
@@ -40,6 +42,7 @@ def prof_forward(self, hidden_states, position_embeddings=None, attention_mask=N
         s = (q[0, h] @ k[0, h].T) * self.scaling
         a = torch.softmax(s.masked_fill(~causal, float("-inf")), -1)
         mass[self._layer, h].index_add_(0, dmat.reshape(-1), a.reshape(-1).double())
+        mass_ns[self._layer, h].index_add_(0, dmat[:, SINK:].reshape(-1), a[:, SINK:].reshape(-1).double())
         out[:, h] = a @ v[:, h]
     return self.o_proj(out.reshape(1, m, H * DH).to(hidden_states.dtype)), None
 
@@ -53,11 +56,12 @@ with torch.no_grad():
             chunk = torch.cat([torch.tensor([bos]), chunk[:-1]])
         model.model(input_ids=chunk[None].to(dev), use_cache=False)
 mass = (mass / (nseq * n)).cpu().numpy()                          # per query: sum_Delta mass = 1
+mass_ns = (mass_ns / (nseq * n)).cpu().numpy()
 count = (n - np.arange(n)).astype(np.float64) * nseq               # number of (s, s-Delta) pairs per offset
-np.savez(out, mass=mass, count=count, n=n, nseq=nseq)
+np.savez(out, mass=mass, mass_nosink=mass_ns, count=count, n=n, nseq=nseq)
 tot = mass.sum(-1)
 print(f"{model_id}: n={n} nseq={nseq}; mass sums per (layer,head) in [{tot.min():.6f}, {tot.max():.6f}]")
 for l in range(NL):
     c = np.cumsum(mass[l].mean(0))
-    print(f"  L{l:2d}: mass at Delta<16 {c[15]:.3f}  <64 {c[63]:.3f}  <256 {c[255]:.3f}")
+    print(f"  L{l:2d}: mass at Delta<16 {c[15]:.3f}  <64 {c[63]:.3f}  <256 {c[255]:.3f}  on sink tokens t<4 {1 - mass_ns[l].sum(-1).mean():.3f}")
 print("wrote", out)

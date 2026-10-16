@@ -79,7 +79,9 @@ def run_layer(task):
     V_all[:, :R] = Vs
     zA = V_all.T.reshape(-1, pf.N_KV, pf.D_H); zA = zA[..., :pf.HALF] + 1j * zA[..., pf.HALF:]   # (4096, h, 64)
     Mq = np.load(qe.M_PATH[model])["M"][l]; Mq = 0.5 * (Mq + np.conj(np.swapaxes(Mq, -1, -2)))
-    prof = np.load(prof_path)["mass"][l]                                                         # (h, n_prof)
+    pz = np.load(prof_path)
+    prof = pz["mass"][l]                                                                         # (h, n_prof)
+    prof_ns = pz["mass_nosink"][l]          # window configs serve sink keys exactly: weight Delta >= W by non-sink mass
     assert prof.shape[1] >= L
     D = np.arange(L, dtype=np.float64)
     cent = np.load(qe.CENTERS)[f"{model}_L{l}_D8"]
@@ -93,7 +95,7 @@ def run_layer(task):
         Dw = D[W:]
         out = []
         for h in range(pf.N_KV):
-            w = prof[h, W:L]
+            w = (prof_ns if W else prof)[h, W:L]
             d = {"Ew": wsums(pe, pe, w, Dw).T}                                  # Ew[i,i'] = sum w e_i conj(e_i')
             for nm, p in (("rope", p_rope), ("ext", p_ext)):
                 d[f"G_{nm}"] = wsums(p, p, w, Dw); d[f"C_{nm}"] = wsums(p, pe, w, Dw)
