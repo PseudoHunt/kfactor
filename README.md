@@ -96,9 +96,31 @@ Unit test: all 64 RoPE atoms with P = I reproduces real RoPE to 5e-14 (fp64) and
 
 The fitted configs B–E fail because the selection objective was uniform over Δ: total score error is 1.6–2.8%, but it
 concentrates at small Δ (230–420% relative at Δ=0, 76–142% at Δ=1–3) where attention mass sits; the substitution
-baselines F/G are exact at Δ=0 by construction. err_q (uniform over Δ) does not predict PPL. Phase 2 (in progress):
-attention-mass-profile weighting, an exactness constraint Σ_k P_ki = 1 at Δ=0 (`fold_select2.py`), and an exact
-recent window W ∈ {16, 64} + 4 sink tokens (`attn_profile.py`, `fold_report2.py`).
+baselines F/G are exact at Δ=0 by construction. err_q (uniform over Δ) does not predict PPL.
+
+**Step 8 — attention-mass-weighted, Δ=0-constrained fold, and an exact recent window** (`attn_profile.py`,
+`fold_select2.py`, `fold_report2.py`). Selection and P minimize the attention-mass-weighted score error with
+Σ_k P_ki = 1 (exact at Δ=0); window configs keep the last W keys and the first 4 (sink) tokens exact and fit the fold on
+Δ ≥ W with sink-excluded mass. Sinks hold 40% (Llama-2) / 47% (Qwen) of attention mass in layers 2–31.
+
+| config (ΔPPL vs H) | Llama-2 @2048 | Qwen @2048 | Qwen @8192 |
+|---|---|---|---|
+| A truncation only | +0.170 | +0.697 | +0.790 |
+| **AW64 truncation + exact window 64 + sink** | **+0.030** | **+0.300** | **+0.460** |
+| C2 weighted + constraint, m=4 | +1.43 | +34.3 | +105.1 |
+| C2W16 | +1.09 | +1.48 | +7.90 |
+| **C2W64** | **+0.206** | **+0.506** | **+4.86** |
+| D2W64 (8 poles + 64 RoPE atoms) | +0.227 | +0.489 | +4.83 |
+| FW64 freqfold_8 + window | +1.81 | +0.94 | +4.22 |
+| GW64 nope_lowfreq_32 + window | +13.10 | +0.376 | **+1.12** |
+
+Verdict against the pre-registered criteria: the weighting fixes the Δ=0 failure (Llama-2 C 95.7 → C2 7.25 PPL) but C2
+alone is not within 2x of A; with an exact 64-token window the fold is within 1.2x of A on Llama-2 @2048 and beats
+FW64/GW64 there by 9x/64x, but on Qwen it loses to GW64 at 2048 and to both FW64 and GW64 at 8192, where its error grows
+with context. The fitted long-range kernel does not beat frequency substitution in the regime it was meant for. The
+positive result is the simplest one: rank-600 key truncation with an exact 64-token window and 4 sink tokens costs
++0.5% (Llama-2 @2048), +4.0% (Qwen @2048) and +6.3% (Qwen @8192) PPL at 4.3–4.8x key-cache compression, training-free.
+The profile-weighted score error tracks PPL across all 16 configs (Spearman 0.73 / 0.84 / 0.85).
 
 ## Important caveats
 
