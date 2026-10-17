@@ -10,10 +10,13 @@ accum = int(sys.argv[sys.argv.index("--accum") + 1]) if "--accum" in sys.argv el
 maxsteps = int(sys.argv[sys.argv.index("--maxsteps") + 1]) if "--maxsteps" in sys.argv else None
 SEQ = 2048; bsz = micro * accum
 steps = int(tokens // (SEQ * bsz)); steps = min(steps, maxsteps) if maxsteps else steps
-S, T = load_data(); assert steps * bsz <= len(S)
+S, T = load_data()
+seed = int(sys.argv[sys.argv.index("--seed") + 1]) if "--seed" in sys.argv else 0
+if seed: S = S[np.random.RandomState(seed).permutation(len(S))]
+assert steps * bsz <= len(S)
 out = f"{D}/runs/{tag}"; os.makedirs(out, exist_ok=True)
-torch.manual_seed(0)
-student = build_student(arm)
+torch.manual_seed(seed)
+student = build_student(arm, seed=seed)
 teacher = load_fp(torch.bfloat16).cuda().eval()
 for p in teacher.parameters(): p.requires_grad = False
 student.config.use_cache = False
