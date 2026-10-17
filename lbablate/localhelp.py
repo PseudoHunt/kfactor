@@ -10,8 +10,10 @@ def make(arm, l, W, b):
         lin.__quant_convert__(do_train=True, quant_func=SmoothSign, eff_bit=0.55, residual=True, split_dim=1024, min_split_dim=8)
         assert lin.split_dim == R_PATH
         m = lin
-    else:
+    elif arm in ("S", "C"):
         m = StructLinear(W, b, layer_ranks(l, arm), arm)
+    else:                                   # "S2" / "S4" / "S8": pair-group structure, g adjacent pairs per block
+        g = int(arm[1:]); m = StructLinear(W, b, layer_ranks(l, "S", g), "S", g=g)
     m = m.cuda()
     for n, p in m.named_parameters(): p.requires_grad = (n != "bias")
     return m

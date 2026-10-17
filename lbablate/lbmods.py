@@ -24,18 +24,22 @@ def pair_rows(i):
     return re, re + HALF
 
 
-def alloc_ranks(C, r):
+def group_rows(m, g):
+    """rows of the g adjacent RoPE pairs g*m .. g*m+g-1 over all heads (2*g*16 rows)."""
+    return torch.cat([torch.cat(pair_rows(i)) for i in range(g * m, g * m + g)])
+
+
+def alloc_ranks(C, r, g=1):
     """greedy pooled-eigenvalue allocation: top-r eigenvalues pooled over the 32 pair slices of C (32x32 each)."""
     C = np.asarray(C, dtype=np.float64)
     ev, tag = [], []
-    for i in range(HALF):
-        re, im = pair_rows(i)
-        idx = torch.cat([re, im]).numpy()
+    for i in range(HALF // g):
+        idx = group_rows(i, g).numpy()
         e = np.linalg.eigvalsh(C[np.ix_(idx, idx)])
         ev.append(e); tag.append(np.full(len(e), i))
     ev, tag = np.concatenate(ev), np.concatenate(tag)
     order = np.argsort(-ev, kind="stable")[:r]
-    return np.bincount(tag[order], minlength=HALF)
+    return np.bincount(tag[order], minlength=HALF // g)
 
 
 def even_ranks(rk):
@@ -64,10 +68,10 @@ def _rank1_abs(M):
 class StructLinear(nn.Module):
     """Pair-structured (kind 'S') or complex-latent ('C') LittleBit linear for a 1024x1024 k_proj, two paths."""
 
-    def __init__(self, W, bias, ranks, kind, quant_func=SmoothSign):
+    def __init__(self, W, bias, ranks, kind, quant_func=SmoothSign, g=1):
         super().__init__()
-        assert kind in ("S", "C")
-        self.kind, self.quant_func = kind, quant_func
+        assert kind in ("S", "C") and (kind == "S" or g == 1) and HALF % g == 0 and len(ranks) == HALF // g
+        self.kind, self.quant_func, self.g = kind, quant_func, g
         self.ranks = [int(x) for x in ranks]
         self.r = int(sum(self.ranks))
         self.in_features, self.out_features = IN, OUT
@@ -92,8 +96,7 @@ class StructLinear(nn.Module):
         if self.kind == "S":
             mask = torch.zeros(OUT, r)
             for i, ri in enumerate(self.ranks):
-                re, im = pair_rows(i)
-                rows = torch.cat([re, im])
+                rows = group_rows(i, self.g) if self.g > 1 else torch.cat(pair_rows(i))
                 mask[rows[:, None], torch.arange(self.offs[i], self.offs[i] + ri)[None]] = 1
             self.register_buffer("mask", mask)
         else:
@@ -128,8 +131,7 @@ class StructLinear(nn.Module):
             for i, ri in enumerate(self.ranks):
                 if ri == 0:
                     continue
-                re, im = pair_rows(i)
-                rows = torch.cat([re, im]).to(T.device)
+                rows = (group_rows(i, self.g) if self.g > 1 else torch.cat(pair_rows(i))).to(T.device)
                 Uu, S, Vh = torch.linalg.svd(T[rows], full_matrices=False)
                 s = S[:ri].sqrt()
                 Ub, Vb = Uu[:, :ri] * s, s[:, None] * Vh[:ri]

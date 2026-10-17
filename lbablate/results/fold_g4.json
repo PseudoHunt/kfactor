@@ -1,0 +1,29 @@
+[
+ {
+  "layer": 2,
+  "g": 4,
+  "rel_fro_mean": 0.32452553510665894,
+  "rel_fro_max_head": 0.6407639384269714,
+  "rel_max_worst": 1.144875407218933,
+  "rel_rowcentred_mean": 0.6828728318214417,
+  "rel_rowcentred_max_head": 0.8809954524040222
+ },
+ {
+  "layer": 12,
+  "g": 4,
+  "rel_fro_mean": 0.250387579202652,
+  "rel_fro_max_head": 0.9042540192604065,
+  "rel_max_worst": 1.1190335750579834,
+  "rel_rowcentred_mean": 0.6880691051483154,
+  "rel_rowcentred_max_head": 1.109669804573059
+ },
+ {
+  "layer": 23,
+  "g": 4,
+  "rel_fro_mean": 0.28407248854637146,
+  "rel_fro_max_head": 0.7951000928878784,
+  "rel_max_worst": 0.9027533531188965,
+  "rel_rowcentred_mean": 0.7627769708633423,
+  "rel_rowcentred_max_head": 0.9471954703330994
+ }
+]

@@ -17,8 +17,8 @@ def lb_args():
 def load_fp(dtype=torch.float32):
     m = AutoModelForCausalLM.from_pretrained(MID, dtype=dtype); m.config.use_cache = False; return m
 
-def layer_ranks(l, kind):
-    rk = alloc_ranks(np.load(f"{CDIR}/layer_{l}.npy"), R_PATH)
+def layer_ranks(l, kind, g=1):
+    rk = alloc_ranks(np.load(f"{CDIR}/layer_{l}.npy"), R_PATH, g)
     return even_ranks(rk) if kind == "C" else rk
 
 def build_student(arm, seed=0):
