@@ -1,0 +1,28 @@
+{
+ "arm": "C",
+ "ckpt": "runs/C_20M/student.pt",
+ "pass_": true,
+ "layers": [
+  {
+   "layer": 2,
+   "rel_max_worst": 6.303375812422018e-07,
+   "rel_fro_worst": 2.6260744334649644e-07,
+   "rel_fro_mean": 1.6603536323600565e-07,
+   "score_scale": 290.4879455566406
+  },
+  {
+   "layer": 12,
+   "rel_max_worst": 5.583288498201e-07,
+   "rel_fro_worst": 3.026607373612933e-07,
+   "rel_fro_mean": 2.169946071717277e-07,
+   "score_scale": 144.780517578125
+  },
+  {
+   "layer": 23,
+   "rel_max_worst": 6.542602477566106e-07,
+   "rel_fro_worst": 3.1547497769679467e-07,
+   "rel_fro_mean": 1.909403977151669e-07,
+   "score_scale": 396.8438415527344
+  }
+ ]
+}
