@@ -12,3 +12,4 @@ qerr_rc1e-14/
 lbablate/*.npy
 lbablate/runs/*/student.pt
 lbablate/runs/smoke_*
+rsplit/*.npy
